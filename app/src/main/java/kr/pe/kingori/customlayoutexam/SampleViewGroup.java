@@ -45,11 +45,12 @@ public class SampleViewGroup extends ViewGroup implements DataPresenter<SampleIt
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        measureChildWithMargins(iv, MeasureSpec.makeMeasureSpec(widthMeasureSpec, MeasureSpec.AT_MOST), 0,
+        measureChildWithMargins(iv, widthMeasureSpec, 0,
                 heightMeasureSpec, 0);
 
-        int usedWidth = iv.getMeasuredWidth();
+        int usedWidth = getViewWidthWithMargin(iv);
 
+        //제대로 하려면 name, sub height를 다 계산해보고 해야겠지만 귀찮아서...
         measureChildWithMargins(name, widthMeasureSpec, usedWidth, heightMeasureSpec, 0);
         measureChildWithMargins(sub, widthMeasureSpec, usedWidth, heightMeasureSpec, 0);
 
@@ -92,5 +93,10 @@ public class SampleViewGroup extends ViewGroup implements DataPresenter<SampleIt
     private int getViewHeightWithMargin(View v) {
         MarginLayoutParams layoutParams = (MarginLayoutParams) v.getLayoutParams();
         return v.getMeasuredHeight() + layoutParams.topMargin + layoutParams.bottomMargin;
+    }
+
+    private int getViewWidthWithMargin(View v){
+        MarginLayoutParams layoutParams = (MarginLayoutParams) v.getLayoutParams();
+        return v.getMeasuredWidth() + layoutParams.leftMargin + layoutParams.rightMargin;
     }
 }
