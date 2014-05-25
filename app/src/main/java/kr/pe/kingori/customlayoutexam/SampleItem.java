@@ -10,8 +10,7 @@ public class SampleItem {
     }
 
     public int getImageBgColor() {
-//        return Color.argb(00, 00, 255, (index * 30) % 256);
-        return Color.RED;
+        return Color.rgb(00, (index * 20) % 256, (index * 15) % 256);
     }
 
     public String getName() {

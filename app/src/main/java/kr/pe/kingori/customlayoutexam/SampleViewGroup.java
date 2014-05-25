@@ -2,6 +2,7 @@ package kr.pe.kingori.customlayoutexam;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +39,8 @@ public class SampleViewGroup extends ViewGroup implements DataPresenter<SampleIt
         sub = (TextView) findViewById(R.id.sub);
     }
 
+    private int viewContentHeight;
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -49,17 +52,19 @@ public class SampleViewGroup extends ViewGroup implements DataPresenter<SampleIt
 
         measureChildWithMargins(name, widthMeasureSpec, usedWidth, heightMeasureSpec, 0);
         measureChildWithMargins(sub, widthMeasureSpec, usedWidth, heightMeasureSpec, 0);
+
+        viewContentHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
-        int ivTop = (getMeasuredHeight() - iv.getMeasuredHeight() - getPaddingTop() - getPaddingBottom()) / 2 + getPaddingTop();
+        int ivTop = (viewContentHeight - iv.getMeasuredHeight()) / 2 + getPaddingTop();
         int ivRight = getPaddingLeft() + iv.getMeasuredWidth();
         iv.layout(getPaddingLeft(), ivTop, ivRight, ivTop + iv.getMeasuredHeight());
 
-        int nameTop = (getMeasuredHeight() - getPaddingTop() - getPaddingBottom() - name.getMeasuredHeight() - sub.getMeasuredHeight() - ((MarginLayoutParams) name.getLayoutParams()).bottomMargin) / 2 + getPaddingTop();
-        int subTop = nameTop + name.getMeasuredHeight() + ((MarginLayoutParams) name.getLayoutParams()).bottomMargin;
+        int nameTop = (viewContentHeight - getViewHeightWithMargin(name) - getViewHeightWithMargin(sub)) / 2 + getPaddingTop();
+        int subTop = nameTop + getViewHeightWithMargin(name);
 
         int nameLeft = ivRight + ((MarginLayoutParams) iv.getLayoutParams()).rightMargin;
 
@@ -82,5 +87,10 @@ public class SampleViewGroup extends ViewGroup implements DataPresenter<SampleIt
         iv.setBackgroundColor(data.getImageBgColor());
         name.setText(data.getName());
         sub.setText(data.getSubString());
+    }
+
+    private int getViewHeightWithMargin(View v) {
+        MarginLayoutParams layoutParams = (MarginLayoutParams) v.getLayoutParams();
+        return v.getMeasuredHeight() + layoutParams.topMargin + layoutParams.bottomMargin;
     }
 }
